@@ -2,8 +2,13 @@ package com.readings.application;
 
 import com.readings.domain.Reading;
 import com.readings.domain.ReadingDetectorService;
+import com.readings.domain.SuspiciousReadingInfo;
 
+import java.time.YearMonth;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ReadingsUseCase {
@@ -15,24 +20,44 @@ public class ReadingsUseCase {
         this.detectorService = detectorService;
     }
 
-    public void processReadings(List<Reading> readingList){
+    public  List<SuspiciousReadingInfo> getSuspiciousReading(List<Reading> allReadings){
 
-        Map<String,Double> medians = detectorService.getMedianByClient(readingList);
+        Map<String, Double> medians = detectorService.getMedianByClient(allReadings);
+        List<SuspiciousReadingInfo> suspiciousList = new ArrayList<>();
 
-
-        System.out.println("| Client               | Period             | Suspicious         | Median");
-        System.out.println("-----------------------------------------------------------------------------------");
-
-        for (Reading reading : readingList){
+        for (Reading reading : allReadings) {
 
             double median = medians.get(reading.getClientId());
 
-            if(detectorService.isSuspicious(reading.getValue(),median)){
-                String line = String.format("| %-20s | %-18s | %-18.2f | %.2f",
-                        reading.getClientId(),reading.getPeriod(),reading.getValue(),median);
-
-                System.out.println(line);
+            if (detectorService.isSuspicious(reading.getValue(), median)) {
+                suspiciousList.add(new SuspiciousReadingInfo(
+                        reading.getClientId(),
+                        reading.getPeriod(),
+                        reading.getValue(),
+                        median
+                ));
             }
         }
+        return suspiciousList;
+    }
+
+    public String buildSuspiciousReport(List<SuspiciousReadingInfo>suspiciousReadings){
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("| Client               | Month              | Suspicious         | Median\n");
+        sb.append("-------------------------------------------------------------------------------\n");
+
+        for (SuspiciousReadingInfo suspiciousReadingInfo: suspiciousReadings){
+
+            YearMonth yearMonth = YearMonth.parse(suspiciousReadingInfo.getPeriod());
+            String monthName = yearMonth.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+
+            sb.append(String.format("| %-20s | %-18s | %-18.2f | %.2f\n",
+                    suspiciousReadingInfo.getClientId(),
+                    monthName,
+                    suspiciousReadingInfo.getValue(),
+                    suspiciousReadingInfo.getMedian()));
+        }
+        return sb.toString();
     }
 }
