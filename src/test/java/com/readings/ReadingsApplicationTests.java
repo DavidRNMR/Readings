@@ -4,9 +4,6 @@ import com.readings.domain.Reading;
 import com.readings.domain.ReadingDetectorService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

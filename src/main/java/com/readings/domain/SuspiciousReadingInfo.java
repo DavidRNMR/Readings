@@ -1,17 +1,17 @@
 package com.readings.domain;
 
-public class Reading {
+public class SuspiciousReadingInfo {
 
     private final String clientId;
     private final String period;
     private final double value;
+    private final double median;
 
-
-
-    public Reading(String clientId, String period, double value) {
+    public SuspiciousReadingInfo(String clientId, String period, double value, double median) {
         this.clientId = clientId;
         this.period = period;
         this.value = value;
+        this.median = median;
     }
 
     public String getClientId() {
@@ -26,4 +26,7 @@ public class Reading {
         return value;
     }
 
+    public double getMedian() {
+        return median;
+    }
 }

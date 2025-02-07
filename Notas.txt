@@ -1,0 +1,6 @@
+-----------Notas para la ejecución de la aplicación---------
+
+La aplicación envía por correo electrónico un email con la lista de lecturas sospechosas.
+Para iniciar la aplicación, es necesario modificar el fichero application-properties y añadir un correo electrónico fuente de gmail con su correspondiente contraseña de aplicación (no confundir con la contraseña normal).
+
+El correo destino puede ser de cualquier otro dominio.
